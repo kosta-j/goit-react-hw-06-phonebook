@@ -5,7 +5,7 @@ import types from './action-types';
 const contactItemsReducer = (state = [], { type, payload }) => {
   switch (type) {
     case types.ADD:
-      return state.push(payload);
+      return [...state, payload];
 
     default:
       return state;
