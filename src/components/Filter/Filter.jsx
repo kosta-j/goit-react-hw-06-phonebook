@@ -1,3 +1,5 @@
+import { connect } from 'react-redux';
+import * as actions from '../../Redux/actions';
 import PropTypes from 'prop-types';
 import s from './Filter.module.css';
 
@@ -20,4 +22,15 @@ Filter.propTypes = {
   onChange: PropTypes.func,
 };
 
-export default Filter;
+const mapStateToProps = state => {
+  return {
+    value: state.contacts.filter,
+    contacts: state.contacts.items,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return { onChange: e => dispatch(actions.changeFilter(e)) };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Filter);

@@ -7,7 +7,7 @@ import Notification from '../Notification/Notification';
 import Section from '../Section/Section';
 import s from './Wrapper.module.css';
 
-function Wrapper({ filter, changeFilter, contacts }) {
+function Wrapper({ contacts }) {
   // useEffect(() => {
   //   const localContacts = localStorage.getItem('contacts');
   //   const parsedContacts = JSON.parse(localContacts);
@@ -28,7 +28,7 @@ function Wrapper({ filter, changeFilter, contacts }) {
           <Notification text="Contact list is empty" />
         ) : (
           <>
-            <Filter value={filter} onChange={changeFilter} />
+            <Filter />
             <ContactList />
           </>
         )}
@@ -39,13 +39,13 @@ function Wrapper({ filter, changeFilter, contacts }) {
 
 const mapStateToProps = state => {
   return {
-    filter: state.contacts.filter,
+    // filter: state.contacts.filter,
     contacts: state.contacts.items,
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return { changeFilter: e => dispatch(actions.changeFilter(e)) };
-};
+// const mapDispatchToProps = dispatch => {
+//   return { changeFilter: e => dispatch(actions.changeFilter(e)) };
+// };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Wrapper);
+export default connect(mapStateToProps)(Wrapper);

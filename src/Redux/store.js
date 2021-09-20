@@ -4,7 +4,10 @@ import types from './action-types';
 
 const contactItemsReducer = (state = [], { type, payload }) => {
   //duplicated name check:
-  if (state.filter(item => item.name === payload.name).length > 0) {
+  if (
+    types.ADD === type &&
+    state.filter(item => item.name === payload.name).length > 0
+  ) {
     alert(`${payload.name} is already in contacts`);
     return state;
   }
