@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
+import * as actions from '../../Redux/actions';
 import ContactForm from '../ContactForm/ContactForm';
 import ContactList from '../ContactList/ContactList';
 import Filter from '../Filter/Filter';
@@ -7,9 +9,9 @@ import Notification from '../Notification/Notification';
 import Section from '../Section/Section';
 import s from './Wrapper.module.css';
 
-function Wrapper() {
+function Wrapper({ filter1, changeFilter1 }) {
   const [contacts, setContacts] = useState([]);
-  const [filter, setFilter] = useState('');
+  // const [filter, setFilter] = useState('');
 
   useEffect(() => {
     const localContacts = localStorage.getItem('contacts');
@@ -33,18 +35,17 @@ function Wrapper() {
       : setContacts(prevContacts => [...prevContacts, contact]);
   };
 
-  const changeFilter = e => {
-    setFilter(e.currentTarget.value);
-  };
+  // const changeFilter = e => {
+  //   setFilter(e.currentTarget.value);
+  // };
 
   const deleteContactHandler = contactID => {
-    console.log(contactID);
     setContacts(prevContacts =>
       prevContacts.filter(item => item.id !== contactID),
     );
   };
 
-  const normalizedFilter = filter.toLowerCase();
+  const normalizedFilter = filter1.toLowerCase();
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(normalizedFilter),
   );
@@ -59,7 +60,7 @@ function Wrapper() {
           <Notification text="Contact list is empty" />
         ) : (
           <>
-            <Filter value={filter} onChange={changeFilter} />
+            <Filter value={filter1} onChange={changeFilter1} />
             <ContactList
               contacts={filteredContacts}
               onDeleteBtnClick={deleteContactHandler}
@@ -71,4 +72,12 @@ function Wrapper() {
   );
 }
 
-export default Wrapper;
+const mapStateToProps = state => {
+  return { filter1: state.contacts.filter };
+};
+
+const mapDispatchToProps = dispatch => {
+  return { changeFilter1: e => dispatch(actions.changeFilter(e)) };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Wrapper);
