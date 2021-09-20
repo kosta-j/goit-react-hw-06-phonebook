@@ -4,15 +4,10 @@ import ContactItem from './ContactItem';
 import * as actions from '../../Redux/actions';
 import s from './ContactList.module.css';
 
-function ContactList({ filter, contacts, onDeleteBtnClick }) {
-  const normalizedFilter = filter.toLowerCase();
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(normalizedFilter),
-  );
-
+function ContactList({ contacts, onDeleteBtnClick }) {
   return (
     <ul className={s.contactList}>
-      {filteredContacts.map(contact => (
+      {contacts.map(contact => (
         <ContactItem
           key={contact.id}
           name={contact.name}
@@ -34,9 +29,14 @@ ContactList.propTypes = {
 };
 
 const mapStateToProps = state => {
+  const { filter, items } = state.contacts;
+  const normalizedFilter = filter.toLowerCase();
+  const filteredContacts = items.filter(contact =>
+    contact.name.toLowerCase().includes(normalizedFilter),
+  );
   return {
-    contacts: state.contacts.items,
-    filter: state.contacts.filter,
+    contacts: filteredContacts,
+    // filter: filter,
   };
 };
 
