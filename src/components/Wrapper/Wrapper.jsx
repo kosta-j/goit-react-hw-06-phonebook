@@ -9,7 +9,7 @@ import Notification from '../Notification/Notification';
 import Section from '../Section/Section';
 import s from './Wrapper.module.css';
 
-function Wrapper({ filter1, changeFilter1 }) {
+function Wrapper({ filter, changeFilter }) {
   const [contacts, setContacts] = useState([]);
   // const [filter, setFilter] = useState('');
 
@@ -45,7 +45,7 @@ function Wrapper({ filter1, changeFilter1 }) {
     );
   };
 
-  const normalizedFilter = filter1.toLowerCase();
+  const normalizedFilter = filter.toLowerCase();
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(normalizedFilter),
   );
@@ -60,7 +60,7 @@ function Wrapper({ filter1, changeFilter1 }) {
           <Notification text="Contact list is empty" />
         ) : (
           <>
-            <Filter value={filter1} onChange={changeFilter1} />
+            <Filter value={filter} onChange={changeFilter} />
             <ContactList
               contacts={filteredContacts}
               onDeleteBtnClick={deleteContactHandler}
@@ -73,11 +73,11 @@ function Wrapper({ filter1, changeFilter1 }) {
 }
 
 const mapStateToProps = state => {
-  return { filter1: state.contacts.filter };
+  return { filter: state.contacts.filter };
 };
 
 const mapDispatchToProps = dispatch => {
-  return { changeFilter1: e => dispatch(actions.changeFilter(e)) };
+  return { changeFilter: e => dispatch(actions.changeFilter(e)) };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Wrapper);

@@ -1,30 +1,42 @@
-import { createStore, applyMiddleware } from 'redux';
+import { combineReducers, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-const initialState = {
-  contacts: {
-    items: [],
-    filter: '',
-  },
-};
+// const initialState = {
+//   contacts: {
+//     items: [],
+//     filter: '',
+//   },
+// };
 
-const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case 'contacts/filter':
-      return {
-        ...state,
-        contacts: {
-          ...state.contacts,
-          filter: action.payload,
-        },
-      };
+const contactItemsReducer = (state = [], { type, payload }) => {
+  switch (type) {
+    case 'contacts/add_contact':
+      return state.push(payload);
 
     default:
-      console.log('default');
       return state;
   }
 };
 
-const store = createStore(reducer, composeWithDevTools());
+const contactFilterReducer = (state = '', { type, payload }) => {
+  switch (type) {
+    case 'contacts/filter':
+      return payload;
+
+    default:
+      return state;
+  }
+};
+
+const contactsReducer = combineReducers({
+  items: contactItemsReducer,
+  filter: contactFilterReducer,
+});
+
+const rootReducer = combineReducers({
+  contacts: contactsReducer,
+});
+
+const store = createStore(rootReducer, composeWithDevTools());
 
 export default store;
