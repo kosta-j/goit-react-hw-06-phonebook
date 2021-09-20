@@ -6,9 +6,9 @@ export const addContact = data => ({
   payload: { id: uuidv4(), name: data.name, number: data.number },
 });
 
-export const deleteContact = id => ({
+export const deleteContact = data => ({
   type: types.DELETE,
-  payload: id,
+  payload: data,
 });
 
 export const changeFilter = e => ({
