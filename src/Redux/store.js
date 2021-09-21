@@ -1,48 +1,74 @@
-import { combineReducers, createStore } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
+import {
+  combineReducers,
+  configureStore,
+  createReducer,
+  getDefaultMiddleware,
+} from '@reduxjs/toolkit';
+import {
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  persistReducer,
+  persistStore,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
+} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 import types from './action-types';
 
-const contactItemsReducer = (state = [], { type, payload }) => {
-  //duplicated name check:
-  if (
-    types.ADD === type &&
-    state.filter(item => item.name === payload.name).length > 0
-  ) {
-    alert(`${payload.name} is already in contacts`);
-    return state;
-  }
+const contactItemsReducer = createReducer([], {
+  [types.ADD]: addContact,
+  [types.DELETE]: deleteContact,
+});
 
-  switch (type) {
-    case types.ADD:
-      return [...state, payload];
-
-    case types.DELETE:
-      return state.filter(item => item.id !== payload.id);
-
-    default:
-      return state;
-  }
-};
-
-const contactFilterReducer = (state = '', { type, payload }) => {
-  switch (type) {
-    case types.CHANGE_FILTER:
-      return payload;
-
-    default:
-      return state;
-  }
-};
+const contactFilterReducer = createReducer('', {
+  [types.CHANGE_FILTER]: (_, { payload }) => payload,
+});
 
 const contactsReducer = combineReducers({
   items: contactItemsReducer,
   filter: contactFilterReducer,
 });
 
-const rootReducer = combineReducers({
-  contacts: contactsReducer,
+const contactsPersistConfig = {
+  key: 'contacts',
+  storage,
+  blacklist: ['filter'],
+};
+
+const persistedContactsReducer = persistReducer(
+  contactsPersistConfig,
+  contactsReducer,
+);
+
+const middleware = [
+  ...getDefaultMiddleware({
+    serializableCheck: {
+      ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+    },
+  }),
+];
+
+const store = configureStore({
+  reducer: { contacts: persistedContactsReducer },
+  middleware: middleware,
+  devTools: process.env.NODE_ENV === 'development',
 });
 
-const store = createStore(rootReducer, composeWithDevTools());
+const persistor = persistStore(store);
 
-export default store;
+export default { store, persistor };
+
+function addContact(state, { payload }) {
+  //duplicated name check:
+  if (state.filter(item => item.name === payload.name).length > 0) {
+    alert(`${payload.name} is already in contacts`);
+    return state;
+  }
+  return [...state, payload];
+}
+
+function deleteContact(state, { payload }) {
+  return state.filter(item => item.id !== payload.id);
+}

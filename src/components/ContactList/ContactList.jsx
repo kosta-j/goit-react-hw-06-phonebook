@@ -36,7 +36,6 @@ const mapStateToProps = state => {
   );
   return {
     contacts: filteredContacts,
-    // filter: filter,
   };
 };
 
