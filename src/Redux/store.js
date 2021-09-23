@@ -1,7 +1,7 @@
 import {
-  combineReducers,
+  // combineReducers,
   configureStore,
-  createReducer,
+  // createReducer,
   getDefaultMiddleware,
 } from '@reduxjs/toolkit';
 import {
@@ -15,21 +15,7 @@ import {
   REHYDRATE,
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import types from './action-types';
-
-const contactItemsReducer = createReducer([], {
-  [types.ADD]: addContact,
-  [types.DELETE]: deleteContact,
-});
-
-const contactFilterReducer = createReducer('', {
-  [types.CHANGE_FILTER]: (_, { payload }) => payload,
-});
-
-const contactsReducer = combineReducers({
-  items: contactItemsReducer,
-  filter: contactFilterReducer,
-});
+import contactsReducer from './reducers';
 
 const contactsPersistConfig = {
   key: 'contacts',
@@ -59,16 +45,3 @@ const store = configureStore({
 const persistor = persistStore(store);
 
 export default { store, persistor };
-
-function addContact(state, { payload }) {
-  //duplicated name check:
-  if (state.filter(item => item.name === payload.name).length > 0) {
-    alert(`${payload.name} is already in contacts`);
-    return state;
-  }
-  return [...state, payload];
-}
-
-function deleteContact(state, { payload }) {
-  return state.filter(item => item.id !== payload.id);
-}
