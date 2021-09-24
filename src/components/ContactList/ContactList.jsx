@@ -1,18 +1,27 @@
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 import ContactItem from './ContactItem';
 import * as actions from '../../Redux/actions';
 import s from './ContactList.module.css';
 
-function ContactList({ contacts, onDeleteBtnClick }) {
+export default function ContactList() {
+  const filter = useSelector(state => state.contacts.filter);
+  const items = useSelector(state => state.contacts.items);
+
+  const normalizedFilter = filter.toLowerCase();
+  const filteredContacts = items.filter(contact =>
+    contact.name.toLowerCase().includes(normalizedFilter),
+  );
+
+  const dispatch = useDispatch();
+  const onDeleteBtnClick = contact => dispatch(actions.deleteContact(contact));
+
   return (
     <ul className={s.contactList}>
-      {contacts.map(contact => (
+      {filteredContacts.map(contact => (
         <ContactItem
           key={contact.id}
           name={contact.name}
           number={contact.number}
-          onDeleteBtnClick={onDeleteBtnClick}
         >
           <button type={s.button} onClick={() => onDeleteBtnClick(contact)}>
             Delete
@@ -22,27 +31,3 @@ function ContactList({ contacts, onDeleteBtnClick }) {
     </ul>
   );
 }
-
-ContactList.propTypes = {
-  contacts: PropTypes.array,
-  onDeleteBtnClick: PropTypes.func,
-};
-
-const mapStateToProps = state => {
-  const { filter, items } = state.contacts;
-  const normalizedFilter = filter.toLowerCase();
-  const filteredContacts = items.filter(contact =>
-    contact.name.toLowerCase().includes(normalizedFilter),
-  );
-  return {
-    contacts: filteredContacts,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    onDeleteBtnClick: contact => dispatch(actions.deleteContact(contact)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactList);

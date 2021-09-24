@@ -1,4 +1,4 @@
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import ContactForm from '../ContactForm/ContactForm';
 import ContactList from '../ContactList/ContactList';
 import Filter from '../Filter/Filter';
@@ -6,7 +6,9 @@ import Notification from '../Notification/Notification';
 import Section from '../Section/Section';
 import s from './Wrapper.module.css';
 
-function Wrapper({ contacts }) {
+export default function Wrapper() {
+  const contacts = useSelector(state => state.contacts.items);
+
   return (
     <div className={s.wrapper}>
       <Section title="Phonebook">
@@ -25,11 +27,3 @@ function Wrapper({ contacts }) {
     </div>
   );
 }
-
-const mapStateToProps = state => {
-  return {
-    contacts: state.contacts.items,
-  };
-};
-
-export default connect(mapStateToProps)(Wrapper);

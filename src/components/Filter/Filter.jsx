@@ -1,9 +1,11 @@
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../../Redux/actions';
-import PropTypes from 'prop-types';
 import s from './Filter.module.css';
 
-function Filter({ value, onChange }) {
+export default function Filter() {
+  const value = useSelector(state => state.contacts.filter);
+  const dispatch = useDispatch();
+
   return (
     <label>
       <p className={s.inputTitle}>Find contacts by name</p>
@@ -11,28 +13,8 @@ function Filter({ value, onChange }) {
         className={s.input}
         type="text"
         value={value}
-        onChange={onChange}
+        onChange={e => dispatch(actions.changeFilter(e.currentTarget.value))}
       />
     </label>
   );
 }
-
-Filter.propTypes = {
-  value: PropTypes.string,
-  onChange: PropTypes.func,
-};
-
-const mapStateToProps = state => {
-  return {
-    value: state.contacts.filter,
-    contacts: state.contacts.items,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    onChange: e => dispatch(actions.changeFilter(e.currentTarget.value)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Filter);
