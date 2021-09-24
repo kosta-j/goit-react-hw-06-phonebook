@@ -1,13 +1,13 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
-import types from './action-types';
+import { addContact, deleteContact, changeFilter } from './actions';
 
 const contactItemsReducer = createReducer([], {
-  [types.ADD]: addContact,
-  [types.DELETE]: deleteContact,
+  [addContact]: addContactCallback,
+  [deleteContact]: deleteContactCallback,
 });
 
 const contactFilterReducer = createReducer('', {
-  [types.CHANGE_FILTER]: (_, { payload }) => payload,
+  [changeFilter]: (_, { payload }) => payload,
 });
 
 const contactsReducer = combineReducers({
@@ -15,7 +15,7 @@ const contactsReducer = combineReducers({
   filter: contactFilterReducer,
 });
 
-function addContact(state, { payload }) {
+function addContactCallback(state, { payload }) {
   //duplicated name check:
   if (state.filter(item => item.name === payload.name).length > 0) {
     alert(`${payload.name} is already in contacts`);
@@ -24,7 +24,7 @@ function addContact(state, { payload }) {
   return [...state, payload];
 }
 
-function deleteContact(state, { payload }) {
+function deleteContactCallback(state, { payload }) {
   return state.filter(item => item.id !== payload.id);
 }
 
